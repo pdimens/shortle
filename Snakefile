@@ -125,9 +125,9 @@ rule map_reads_1:
     threads: 20
     shell:
         """
-		minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
-		samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
-		samtools index {output} -@{threads}
+	minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
+	samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
+	samtools index {output} -@{threads}
         """
 
 rule polish_1:
@@ -157,9 +157,9 @@ rule map_reads2:
     shell:
         """
         if [ ! -f "{output}.tmp" ]; then
-		   minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
+	   minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
         fi
-	    samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
+	samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
         samtools index {output} -@{threads}
         """
 
@@ -255,7 +255,7 @@ rule map_reads3:
     threads: 20
     shell:
         """
-        minimap2 --secondary=no --MD -ax sr -t {threads} {input.asm} {input.f} {input.r} | samtools view -Sb -F4 -q5 -@ {threads} - > {output}.tmp
+        minimap2 --secondary=no --MD -ax sr -t {threads} {input.asm} {input.f} {input.r} | samtools view -Sb -F4 -q5 -@ {threads} - > {output}.tmp 2> /dev/null
     	samtools sort -m 16G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
         samtools index {output} -@{threads}
         """
