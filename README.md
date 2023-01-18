@@ -16,11 +16,11 @@ This command will create an environment called `shortle`. Activate it with:
 conda activate shortle
 ```
 
-3. You'll need to modify the first few lines that specify the forward/reverse read information in `Snakefile` to match your data
+3. You'll need to modify the first few lines that specify the forward/reverse read information in `Snakefile` to match your data. You'll also want to modify any parameters for `sparseassembler`, `dbg2olc` and `abyss` as you see fit. The values there are from previous projects and reflect _those_ data. Adjust your `k` paramters accordingly (or wing it).
 
 4. You'll need to run it once with the specific command to end it prematurely (at the purge_haplotigs stage):
 ```bash
-snakemake -j 20 purge_haplotigs/mapped2.bam.gencov
+snakemake -j 20 --use-conda purge_haplotigs/mapped2.bam.gencov
 ```
 where `j` is how many cores you are willing to reserve for the Snakemake workflow.
 
@@ -28,7 +28,7 @@ where `j` is how many cores you are willing to reserve for the Snakemake workflo
 
 6. Modify `rule purge_haplotigs_suspects` to match your chosen cutoffs and rerun the entire workflow:
 ```bash
-snakemake -j 20
+snakemake -j 20 --use-conda
 ```
 
 7. Your resulting assembly will be in `polish_2`
