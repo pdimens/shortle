@@ -47,7 +47,7 @@ rule assemble_abyss:
         """
     	mkdir -p tmp
         mkdir -p Abyss/tmp
-	    export TMPDIR=./tmp
+        export TMPDIR=./tmp
         abyss-pe in='../{input.f} ../{input.r}' np={threads} name={params.prefix} {params.other} {params.gsize}
         """
 
