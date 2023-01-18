@@ -125,9 +125,9 @@ rule map_reads_1:
     threads: 20
     shell:
         """
-	minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
-	samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
-	samtools index {output} -@{threads}
+		minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
+		samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
+		samtools index {output} -@{threads}
         """
 
 rule polish_1:
@@ -136,7 +136,7 @@ rule polish_1:
         r = trim_r,
         bam = "mapped.bam",
         asm = "dbg2olc/DBG2OLC_Consensus.fasta"
-    output: f"polish/1/{outprefix}.hypo.fasta"
+    output: f"polish_1/{outprefix}.hypo.fasta"
     message: "Polishing {input.asm} with HyPo"
     threads: 10
     shell:
@@ -149,7 +149,7 @@ rule map_reads2:
     input:
         f = trim_f,
         r = trim_r,
-        asm = f"polish/1/{outprefix}.hypo.fasta"
+        asm = f"polish_1/{outprefix}.hypo.fasta"
     output:
         mapfile = temp("mapped2.bam")
     message: "Mapping reads to {input.asm}"
@@ -157,15 +157,15 @@ rule map_reads2:
     shell:
         """
         if [ ! -f "{output}.tmp" ]; then
-	   minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
+	   	minimap2 -t {threads} -ax sr --secondary=no --MD --sam-hit-only {input.asm} {input.f} {input.r} | samtools view -hb -F4 -q5 -@ {threads} > {output}.tmp 2> /dev/null
         fi
-	samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
+		samtools sort -m 10G -l0  -@{threads} {output}.tmp > {output} && rm {output}.tmp
         samtools index {output} -@{threads}
         """
 
 rule purge_haplotigs_histogram:
 	input:
-		asm = f"polish/1/{outprefix}.hypo.fasta",
+		asm = f"polish_1/{outprefix}.hypo.fasta",
 		mapfile = "mapped2.bam"
 	output:
 		histo = "purge_haplotigs/mapped2.bam.gencov",
@@ -200,7 +200,7 @@ rule purge_haplotigs_suspects:
 
 rule purge_haplotigs:
 	input:
-		asm = f"polish/1/{outprefix}.hypo.fasta",
+		asm = f"polish_1/{outprefix}.hypo.fasta",
 		mapfile = "mapped2.bam",
 		suspects = "purge_haplotigs/assembly_stats.csv"
 	output:
